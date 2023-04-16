@@ -4,6 +4,6 @@
 
 ## To run the code enter the following commands:
 
-### npm install 
+### npm install // review my code
 
 ### npm run start
