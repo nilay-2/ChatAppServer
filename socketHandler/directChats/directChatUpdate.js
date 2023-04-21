@@ -1,6 +1,5 @@
 const Chat = require("../../models/chatModel");
 const serverStore = require("../../serverStore");
-
 exports.realTimeChatUpdate = async (author, receiver) => {
   const conversation = await Chat.find(
     { participants: { $all: [author, receiver] } },
@@ -9,10 +8,15 @@ exports.realTimeChatUpdate = async (author, receiver) => {
     { path: "author", select: "_id name email" },
     // { path: "receiver", select: "_id name email" },
   ]);
-  console.log(conversation);
+  // console.log(conversation);
   const io = serverStore.getSocketIoInstance();
 
+  const receiverList = serverStore.getActiveConnections(receiver);
+  console.log("receiverlist", receiverList);
   if (conversation.length > 0) {
-    io.emit("realTimeChatUpdate", conversation);
+    receiverList.forEach((receiverId) => {
+      io.to(receiverId).emit("realTimeChatUpdate", conversation);
+    });
+    // io.emit("realTimeChatUpdate", conversation);
   }
 };
