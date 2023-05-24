@@ -97,7 +97,7 @@ exports.acceptInvitation = catchAsync(async (req, res, next) => {
   );
 
   const { senderId } = Invite;
-  console.log(`Invite Id: ${InvtId} \n receiverId: ${receiverId} \n senderid: ${senderId}`);
+  // console.log(`Invite Id: ${InvtId} \n receiverId: ${receiverId} \n senderid: ${senderId}`);
 
   const friends = await Friends.insertMany([
     { userId: senderId, friendId: receiverId },
