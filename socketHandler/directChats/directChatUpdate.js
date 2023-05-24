@@ -12,10 +12,10 @@ exports.realTimeChatUpdate = async (author, receiver) => {
   const io = serverStore.getSocketIoInstance();
 
   const receiverList = serverStore.getActiveConnections(receiver);
-  console.log("receiverlist", receiverList);
+  // console.log("receiverlist", receiverList);
   if (conversation.length > 0) {
     receiverList.forEach((receiverId) => {
-      io.to(receiverId).emit("realTimeChatUpdate", conversation);
+      io.to(receiverId).emit("realTimeChatUpdate", conversation); // io.emit() sends message to both the sender and the receiver whereas socket.emit() sends only to the receiver and not the sender
     });
     // io.emit("realTimeChatUpdate", conversation);
   }
