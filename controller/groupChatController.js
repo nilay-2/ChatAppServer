@@ -5,7 +5,6 @@ const GroupChatMessage = require("../models/groupChatMessageModel");
 exports.createGroup = catchAsync(async (req, res, next) => {
   const { groupName, arrayOfFriendsId } = req.body;
   arrayOfFriendsId?.push(req.user._id.toString());
-  //   console.log(arrayOfFriendsId);
 
   const group = await GroupChatRoom.create({ groupName, participants: arrayOfFriendsId, creator: req.user._id });
 
@@ -32,18 +31,15 @@ exports.createGroupChatMessage = catchAsync(async (socket, data, io) => {
     author: currentUser.id,
   });
 
-  this.realTimeGroupChatUpdate(socket, _id, io);
+  await groupChatMessage.populate({ path: "author", select: "_id name email" }).execPopulate();
+
+  this.realTimeGroupChatUpdate(socket, _id, io, groupChatMessage);
 });
 
-exports.realTimeGroupChatUpdate = catchAsync(async (socket, id, io) => {
-  const groupChatMessages = await GroupChatMessage.find({ groupId: id }).populate({
-    path: "author",
-    select: "_id name email",
-  });
-
-  io.to(id).emit("recieve_group_message", groupChatMessages);
+exports.realTimeGroupChatUpdate = async (socket, id, io, groupChatMessage) => {
+  io.to(id).emit("recieve_group_message", groupChatMessage);
   // console.log(groupChatMessages);
-});
+};
 
 exports.getRealTimeGroupChatMessages = catchAsync(async (req, res, next) => {
   const { id } = req.params;

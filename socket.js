@@ -64,7 +64,17 @@ exports.registerSocketServer = (server) => {
     });
     socket.on("send_group_message", (data) => {
       groupChatController.createGroupChatMessage(socket, data, io);
-      // console.log("groupMessages", groupMessages);
+    });
+
+    socket.on("send_typing_indicator_event", (data) => {
+      // console.log(data);
+      const activeConnectionsOfReceiver = serverStore.getActiveConnections(data.id);
+      const [receiverSocketId] = activeConnectionsOfReceiver;
+      // receiver_details_for_typing_indicator = receiverSocketId;
+      // sender_details_for_typing_indicator = data.sender;
+      setTimeout(() => {
+        socket.to(receiverSocketId).emit("received_typing_indicator_event", data.sender);
+      }, 500);
     });
   });
 

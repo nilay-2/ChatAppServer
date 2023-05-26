@@ -13,8 +13,12 @@ exports.createNewDirectChats = async (socket, data) => {
     receiver: receiverId,
     date,
   });
-  // console.log(newChat);
-  directChatUpdate.realTimeChatUpdate(author.id, receiverId);
+
+  newChat.participants = undefined;
+  await newChat.populate({ path: "author", select: "_id name email" }).execPopulate();
+
+  // directChatUpdate.realTimeChatUpdate(author.id, receiverId);
+  directChatUpdate.realTimeChatUpdate(newChat, author.id, receiverId);
 };
 
 exports.getChatHistory = catchAsync(async (req, res, next) => {
