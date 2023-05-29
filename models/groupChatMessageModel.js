@@ -15,6 +15,17 @@ const groupChatMessageSchema = mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "GroupChatRoom",
   },
+  messageReplyDetails: {
+    messageId: {
+      type: mongoose.Schema.ObjectId,
+    },
+    content: {
+      type: String,
+    },
+    username: {
+      type: String,
+    },
+  },
 });
 
 const GroupChatMessageModel = mongoose.model("GroupChatMessage", groupChatMessageSchema);

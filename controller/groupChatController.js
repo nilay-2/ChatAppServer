@@ -24,12 +24,17 @@ exports.createGroupChatMessage = catchAsync(async (socket, data, io) => {
   const currentUser = await socket.user;
   const { content, date, _id } = data;
   // console.log("message", content, "date", date, "group id", _id);
+
+  const messageReplyDetails = data?.messageReplyDetails;
+
   const groupChatMessage = await GroupChatMessage.create({
     content,
     date,
     groupId: _id,
     author: currentUser.id,
+    messageReplyDetails,
   });
+  console.log(messageReplyDetails);
 
   await groupChatMessage.populate({ path: "author", select: "_id name email" }).execPopulate();
 
@@ -52,5 +57,16 @@ exports.getRealTimeGroupChatMessages = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     data: { groupChatMessages },
+  });
+});
+
+exports.deleteGroupChatMessage = catchAsync(async (req, res, next) => {
+  const { groupId, messageId } = req.params;
+
+  await GroupChatMessage.findOneAndDelete({ _id: messageId, groupId: groupId });
+
+  res.status(200).json({
+    status: "success",
+    message: "Message deleted successfully",
   });
 });
