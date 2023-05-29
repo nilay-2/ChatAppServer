@@ -21,6 +21,17 @@ const chatSchema = mongoose.Schema({
   date: {
     type: Date,
   },
+  messageReplyDetails: {
+    messageId: {
+      type: mongoose.Schema.ObjectId,
+    },
+    content: {
+      type: String,
+    },
+    username: {
+      type: String,
+    },
+  },
 });
 
 const Chat = mongoose.model("Chat", chatSchema);

@@ -37,11 +37,7 @@ exports.registerSocketServer = (server) => {
     });
 
     socket.on("directMessage", (data) => {
-      if (data.chatType === "DIRECT") {
-        directChatController.createNewDirectChats(socket, data);
-      } else {
-        // console.log("it is group chat");
-      }
+      directChatController.createNewDirectChats(socket, data);
     });
 
     socket.on("join_group", (data) => {
@@ -72,9 +68,7 @@ exports.registerSocketServer = (server) => {
       const [receiverSocketId] = activeConnectionsOfReceiver;
       // receiver_details_for_typing_indicator = receiverSocketId;
       // sender_details_for_typing_indicator = data.sender;
-      setTimeout(() => {
-        socket.to(receiverSocketId).emit("received_typing_indicator_event", data.sender);
-      }, 500);
+      socket.to(receiverSocketId).emit("received_typing_indicator_event", data.sender);
     });
   });
 
