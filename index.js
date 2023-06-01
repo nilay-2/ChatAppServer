@@ -20,7 +20,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["https://chatvibe.vercel.app", "http://localhost:3000"],
+    // origin: "http://localhost:3000",
+    origin: "https://chatvibe.vercel.app",
     credentials: true,
   })
 );
@@ -54,6 +55,7 @@ mongoose
   });
 
 app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://chatvibeserver.vercel.app");
   res.setHeader("Access-Control-Allow-Origin", "https://chatvibe.vercel.app");
   next();
 });
