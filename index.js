@@ -55,7 +55,7 @@ mongoose
   });
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://chatvibeserver.vercel.app");
+  res.setHeader("Access-Control-Allow-Origin", "https://chatvibe.vercel.app");
   next();
 });
 
