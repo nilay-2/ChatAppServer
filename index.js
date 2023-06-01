@@ -7,8 +7,7 @@ const chatRoutes = require("./routes/chatRoutes");
 const friendsRouter = require("./routes/friendsRoute");
 const groupChatRouter = require("./routes/groupChatRoutes");
 const cookieParser = require("cookie-parser");
-const http = require("http");
-// const { createProxyMiddleware } = require("http-proxy-middleware");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 const dotenv = require("dotenv");
 const cors = require("cors");
 dotenv.config({ path: "./.env" });
@@ -17,32 +16,29 @@ dotenv.config({ path: "./.env" });
 const socket = require("./socket");
 
 const app = express();
-const server = http.createServer(app);
-socket.registerSocketServer(server);
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://chatvibe.vercel.app",
-    // origin: "http://localhost:3000",
+    origin: ["https://chatvibe.vercel.app", "http://localhost:3000"],
     credentials: true,
   })
 );
 
 // Proxy middleware configuration
-// const proxyOptions = {
-//   target: "https://firebasestorage.googleapis.com",
-//   changeOrigin: true,
-//   pathRewrite: {
-//     "^/proxy": "", // Remove the '/proxy' prefix from the request URL
-//   },
-// };
+const proxyOptions = {
+  target: "https://firebasestorage.googleapis.com",
+  changeOrigin: true,
+  pathRewrite: {
+    "^/proxy": "", // Remove the '/proxy' prefix from the request URL
+  },
+};
 
 // Create the proxy middleware
-// const proxy = createProxyMiddleware(proxyOptions);
+const proxy = createProxyMiddleware(proxyOptions);
 
 // Use the proxy middleware for all requests
-// app.use("/proxy", proxy);
+app.use("/proxy", proxy);
 
 const DB = process.env.DATABASE_URL;
 
@@ -69,6 +65,7 @@ app.use("/api/friends", friendsRouter);
 app.use("/api/groupChat", groupChatRouter);
 app.use(globalErrHandler);
 const port = process.env.PORT || 8000;
-server.listen(port, "127.0.0.1", () => {
+const server = app.listen(port, "127.0.0.1", () => {
   console.log(`App running on port ${port}`);
 });
+socket.registerSocketServer(server);
