@@ -12,7 +12,8 @@ exports.registerSocketServer = (server) => {
   const io = socket(server, {
     cors: {
       // origin: "http://localhost:3000",
-      origin: "https://chatvibe.vercel.app",
+      // origin: "https://chatvibe.vercel.app",
+      origin: "*",
       methods: ["GET", "POST", "PATCH"],
     },
   });
