@@ -21,6 +21,9 @@ const chatSchema = mongoose.Schema({
   date: {
     type: Date,
   },
+  file: {
+    type: Buffer,
+  },
   messageReplyDetails: {
     messageId: {
       type: mongoose.Schema.ObjectId,

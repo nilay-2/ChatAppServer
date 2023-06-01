@@ -19,6 +19,9 @@ exports.createNewDirectChats = async (socket, data) => {
     messageReplyDetails,
   });
 
+  const obj = { age: 1, name: "nilay" };
+  console.log(JSON.stringify(obj));
+
   newChat.participants = undefined;
   await newChat.populate({ path: "author", select: "_id name email" }).execPopulate();
 
