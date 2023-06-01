@@ -11,7 +11,8 @@ let GLOBAL_CURRENT_ROOM_ID = null;
 exports.registerSocketServer = (server) => {
   const io = socket(server, {
     cors: {
-      origin: "http://localhost:3000",
+      // origin: "http://localhost:3000",
+      origin: "https://chatvibe.vercel.app",
       methods: ["GET", "POST", "PATCH"],
     },
   });
