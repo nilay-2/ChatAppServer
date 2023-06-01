@@ -14,7 +14,7 @@ exports.registerSocketServer = (server) => {
       // origin: "http://localhost:3000",
       // origin: "https://chatvibe.vercel.app",
       origin: "*",
-      methods: ["GET", "POST", "PATCH"],
+      // methods: ["GET", "POST", "PATCH"],
     },
   });
 
