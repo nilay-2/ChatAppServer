@@ -54,6 +54,11 @@ mongoose
     console.log("Database connected successfully");
   });
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://chatvibe.vercel.app");
+  next();
+});
+
 app.use("/api/users", userRoutes);
 app.use("/api/friend-invitation", friendInvitationRoutes);
 app.use("/api/chat", chatRoutes);
