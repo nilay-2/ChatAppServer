@@ -14,6 +14,14 @@ exports.registerSocketServer = (server) => {
       // origin: "http://localhost:3000",
       origin: "https://chatvibe.vercel.app",
       methods: ["GET", "POST", "PATCH"],
+      allowRequest: (req, callback) => {
+        callback(null, {
+          cors: {
+            origin: req.headers.origin,
+            methods: ["GET", "POST", "PATCH"],
+          },
+        });
+      },
     },
   });
 
