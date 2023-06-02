@@ -64,7 +64,7 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/friends", friendsRouter);
 app.use("/api/groupChat", groupChatRouter);
 app.use(globalErrHandler);
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 5000;
 const server = app.listen(port, "127.0.0.1", () => {
   console.log(`App running on port ${port}`);
 });
