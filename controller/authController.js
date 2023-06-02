@@ -7,6 +7,7 @@ const { promisify } = require("util");
 //   expires: new Date(Date.now() + process.env.COOKIE_EXPIRY * 60 * 60 * 1000),
 //   secure: false,
 // };
+const url = require("../utils/url");
 
 const signToken = (user) => {
   return jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
@@ -21,9 +22,9 @@ const createToken = (res, user, statusCode, message) => {
     .cookie("jwt", token, {
       httpOnly: true,
       expires: new Date(Date.now() + process.env.COOKIE_EXPIRY * 24 * 60 * 60 * 1000),
-      secure: true,
+      secure: url.frontEndUrl === "http://localhost:3000" ? false : true,
       path: "/",
-      domain: "chatsphereserver.up.railway.app",
+      domain: url.frontEndUrl === "http://localhost:3000" ? "localhost" : "chatsphereserver.up.railway.app",
       sameSite: "none",
     })
     .json({

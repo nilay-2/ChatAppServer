@@ -8,6 +8,7 @@ const friendsRouter = require("./routes/friendsRoute");
 const groupChatRouter = require("./routes/groupChatRoutes");
 const cookieParser = require("cookie-parser");
 // const { createProxyMiddleware } = require("http-proxy-middleware");
+const url = require("./utils/url");
 const dotenv = require("dotenv");
 const cors = require("cors");
 dotenv.config({ path: "./.env" });
@@ -20,7 +21,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://chatsphereclient.netlify.app",
+    origin: url.frontEndUrl,
     credentials: true,
   })
 );
@@ -65,7 +66,8 @@ app.use("/api/friends", friendsRouter);
 app.use("/api/groupChat", groupChatRouter);
 app.use(globalErrHandler);
 const port = process.env.PORT || 5000;
-const server = app.listen(port, "0.0.0.0", () => {
+const host = url.frontEndUrl === "http://localhost:3000" ? "127.0.0.1" : "0.0.0.0";
+const server = app.listen(port, host, () => {
   console.log(`App running on port ${port}`);
 });
 socket.registerSocketServer(server);

@@ -5,13 +5,13 @@ const disconnectHandler = require("./socketHandler/disconnectHandler");
 const directChatController = require("./controller/directChatController");
 const groupChatController = require("./controller/groupChatController");
 const serverStore = require("./serverStore");
-
+const url = require("./utils/url");
 let GLOBAL_CURRENT_ROOM_ID = null;
 
 exports.registerSocketServer = (server) => {
   const io = socket(server, {
     cors: {
-      origin: "https://chatsphereclient.netlify.app",
+      origin: url.frontEndUrl,
       credentials: true,
       methods: ["GET", "POST", "PATCH"],
     },
