@@ -23,7 +23,7 @@ const createToken = (res, user, statusCode, message) => {
       expires: new Date(Date.now() + process.env.COOKIE_EXPIRY * 24 * 60 * 60 * 1000),
       secure: true,
       path: "/",
-      domain: "chatappserver-production-6106.up.railway.app",
+      domain: "chatsphereserver.up.railway.app",
       sameSite: "none",
     })
     .json({
