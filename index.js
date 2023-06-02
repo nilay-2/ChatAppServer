@@ -7,7 +7,7 @@ const chatRoutes = require("./routes/chatRoutes");
 const friendsRouter = require("./routes/friendsRoute");
 const groupChatRouter = require("./routes/groupChatRoutes");
 const cookieParser = require("cookie-parser");
-const { createProxyMiddleware } = require("http-proxy-middleware");
+// const { createProxyMiddleware } = require("http-proxy-middleware");
 const dotenv = require("dotenv");
 const cors = require("cors");
 dotenv.config({ path: "./.env" });
@@ -20,26 +20,25 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    // origin: "http://localhost:3000",
-    origin: "https://chatvibe.vercel.app",
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
 
 // Proxy middleware configuration
-const proxyOptions = {
-  target: "https://firebasestorage.googleapis.com",
-  changeOrigin: true,
-  pathRewrite: {
-    "^/proxy": "", // Remove the '/proxy' prefix from the request URL
-  },
-};
+// const proxyOptions = {
+//   target: "https://firebasestorage.googleapis.com",
+//   changeOrigin: true,
+//   pathRewrite: {
+//     "^/proxy": "", // Remove the '/proxy' prefix from the request URL
+//   },
+// };
 
 // Create the proxy middleware
-const proxy = createProxyMiddleware(proxyOptions);
+// const proxy = createProxyMiddleware(proxyOptions);
 
 // Use the proxy middleware for all requests
-app.use("/proxy", proxy);
+// app.use("/proxy", proxy);
 
 const DB = process.env.DATABASE_URL;
 
@@ -54,10 +53,10 @@ mongoose
     console.log("Database connected successfully");
   });
 
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://chatvibe.vercel.app");
-  next();
-});
+// app.use((req, res, next) => {
+//   // res.setHeader("Access-Control-Allow-Origin", "https://chatvibe.vercel.app");
+//   next();
+// });
 
 app.use("/api/users", userRoutes);
 app.use("/api/friend-invitation", friendInvitationRoutes);

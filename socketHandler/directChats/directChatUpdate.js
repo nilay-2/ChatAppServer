@@ -27,7 +27,8 @@ exports.realTimeChatUpdate = (newChat, author, receiver) => {
   const io = serverStore.getSocketIoInstance();
   const authorList = serverStore.getActiveConnections(author);
   const receiverList = serverStore.getActiveConnections(receiver);
-  // console.log(authorList);
+  console.log(authorList, receiverList);
+  console.log(newChat);
   // receiverList.forEach((receiverId) => {}); // we can use loops
   io.to([...receiverList, ...authorList]).emit("realTimeChatUpdate", newChat); // we can directly pass the array // send the new message to author and sender both
 };

@@ -11,8 +11,9 @@ let GLOBAL_CURRENT_ROOM_ID = null;
 exports.registerSocketServer = (server) => {
   const io = socket(server, {
     cors: {
-      origin: ["http://localhost:3000", "https://chatvibe.vercel.app"],
-      credentials: true,
+      origin: "http://localhost:3000",
+      // credentials: true,
+      methods: ["GET", "POST", "PATCH"],
     },
   });
 
@@ -37,6 +38,7 @@ exports.registerSocketServer = (server) => {
     });
 
     socket.on("directMessage", (data) => {
+      console.log(data);
       directChatController.createNewDirectChats(socket, data);
     });
 

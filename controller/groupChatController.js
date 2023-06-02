@@ -34,7 +34,7 @@ exports.createGroupChatMessage = catchAsync(async (socket, data, io) => {
     author: currentUser.id,
     messageReplyDetails,
   });
-  console.log(messageReplyDetails);
+  // console.log(messageReplyDetails);
 
   await groupChatMessage.populate({ path: "author", select: "_id name email" }).execPopulate();
 

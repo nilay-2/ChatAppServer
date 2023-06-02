@@ -1,14 +1,14 @@
 const catchAsync = require("../utils/catchAsync");
 const Chat = require("../models/chatModel");
 const directChatUpdate = require("../socketHandler/directChats/directChatUpdate");
-exports.createNewDirectChats = async (socket, data) => {
+exports.createNewDirectChats = catchAsync(async (socket, data) => {
   // console.log(data);
   const author = await socket.user;
-  const { receiverId, content, date } = data;
+  const { receiverId, content, date, file } = data;
 
   const messageReplyDetails = data?.messageReplyDetails;
 
-  console.log(messageReplyDetails);
+  // console.log(messageReplyDetails);
 
   const newChat = await Chat.create({
     participants: [author.id, receiverId],
@@ -17,17 +17,15 @@ exports.createNewDirectChats = async (socket, data) => {
     receiver: receiverId,
     date,
     messageReplyDetails,
+    file,
   });
-
-  const obj = { age: 1, name: "nilay" };
-  console.log(JSON.stringify(obj));
 
   newChat.participants = undefined;
   await newChat.populate({ path: "author", select: "_id name email" }).execPopulate();
 
   // directChatUpdate.realTimeChatUpdate(author.id, receiverId);
   directChatUpdate.realTimeChatUpdate(newChat, author.id, receiverId);
-};
+});
 
 exports.getChatHistory = catchAsync(async (req, res, next) => {
   // console.log(req.body);
