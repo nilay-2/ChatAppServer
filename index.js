@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://master--keen-chaja-a2d6ae.netlify.app",
+    origin: "https://chatsphereclient.netlify.app",
     credentials: true,
   })
 );

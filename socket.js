@@ -11,7 +11,7 @@ let GLOBAL_CURRENT_ROOM_ID = null;
 exports.registerSocketServer = (server) => {
   const io = socket(server, {
     cors: {
-      origin: "https://master--keen-chaja-a2d6ae.netlify.app",
+      origin: "https://chatsphereclient.netlify.app",
       credentials: true,
       methods: ["GET", "POST", "PATCH"],
     },
