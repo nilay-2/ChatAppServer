@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://master--keen-chaja-a2d6ae.netlify.app",
     credentials: true,
   })
 );
@@ -53,10 +53,10 @@ mongoose
     console.log("Database connected successfully");
   });
 
-// app.use((req, res, next) => {
-//   // res.setHeader("Access-Control-Allow-Origin", "https://chatvibe.vercel.app");
-//   next();
-// });
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://chatappserver-production-6106.up.railway.app");
+  next();
+});
 
 app.use("/api/users", userRoutes);
 app.use("/api/friend-invitation", friendInvitationRoutes);

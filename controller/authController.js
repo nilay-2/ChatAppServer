@@ -21,10 +21,10 @@ const createToken = (res, user, statusCode, message) => {
     .cookie("jwt", token, {
       httpOnly: true,
       expires: new Date(Date.now() + process.env.COOKIE_EXPIRY * 24 * 60 * 60 * 1000),
-      secure: false,
-      // path: "/",
-      // domain: "chatvibeserver.vercel.app",
-      // sameSite: "none",
+      secure: true,
+      path: "/",
+      domain: "chatappserver-production-6106.up.railway.app",
+      sameSite: "none",
     })
     .json({
       status: "success",
