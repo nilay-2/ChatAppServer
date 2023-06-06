@@ -25,7 +25,7 @@ const createToken = (res, user, statusCode, message) => {
       secure: url.frontEndUrl === "http://localhost:3000" ? false : true,
       path: "/",
       domain: url.frontEndUrl === "http://localhost:3000" ? "localhost" : "chatsphereserver.up.railway.app",
-      sameSite: "none",
+      // sameSite: "none",
     })
     .json({
       status: "success",

@@ -22,7 +22,18 @@ const chatSchema = mongoose.Schema({
     type: Date,
   },
   file: {
-    type: Buffer,
+    url: {
+      type: String,
+    },
+    fileName: {
+      type: String,
+    },
+    mimeType: {
+      type: String,
+    },
+    size: {
+      type: String,
+    },
   },
   messageReplyDetails: {
     messageId: {
