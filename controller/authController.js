@@ -63,6 +63,7 @@ exports.logout = catchAsync(async (req, res, next) => {
   res.clearCookie("jwt", {
     domain: url.frontEndUrl === "http://localhost:3000" ? "localhost" : "chatsphereserver.up.railway.app",
     path: "/",
+    sameSite: "none",
   });
   res.status(200).json({
     status: "success",
