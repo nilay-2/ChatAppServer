@@ -60,7 +60,10 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.logout = catchAsync(async (req, res, next) => {
-  res.clearCookie("jwt");
+  res.clearCookie("jwt", {
+    domain: url.frontEndUrl === "http://localhost:3000" ? "localhost" : "chatsphereserver.up.railway.app",
+    path: "/",
+  });
   res.status(200).json({
     status: "success",
     message: "Logout successful",

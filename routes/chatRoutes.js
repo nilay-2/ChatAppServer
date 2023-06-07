@@ -9,6 +9,6 @@ router.use(authController.protect);
 
 router.route("/:chosenChatId").post(directChatController.getChatHistory);
 
-router.route("/delete/:messageId").delete(directChatController.deleteMessage);
+router.route("/delete/:messageId").post(directChatController.deleteMessage);
 
 module.exports = router;
