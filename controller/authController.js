@@ -64,6 +64,8 @@ exports.logout = catchAsync(async (req, res, next) => {
     domain: url.frontEndUrl === "http://localhost:3000" ? "localhost" : "chatsphereserver.up.railway.app",
     path: "/",
     sameSite: "none",
+    secure: true,
+    httpOnly: true,
   });
   res.status(200).json({
     status: "success",
