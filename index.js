@@ -50,7 +50,7 @@ app.use("/api/friends", friendsRouter);
 app.use("/api/groupChat", groupChatRouter);
 app.use(globalErrHandler);
 const port = process.env.PORT || 5000;
-const host = url.frontEndUrl === "http://localhost:3000" ? "127.0.0.1" : "0.0.0.0";
+const host = process.env.NODE_ENV === "development" ? "127.0.0.1" : "0.0.0.0";
 const server = app.listen(port, host, () => {
   console.log(`App running on port ${port}`);
   console.log(`Enviroment ${process.env.NODE_ENV}`);

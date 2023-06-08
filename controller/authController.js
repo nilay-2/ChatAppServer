@@ -9,7 +9,6 @@ const cookieOptions = {
   path: "/",
   domain: process.env.NODE_ENV === "development" ? url.backend_Dev_Domain : url.backend_Prod_Domain,
 };
-const url = require("../utils/url");
 
 const signToken = (user) => {
   return jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
