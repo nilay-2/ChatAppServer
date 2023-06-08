@@ -2,11 +2,13 @@ const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
-// const cookieOptions = {
-//   httpOnly: true,
-//   expires: new Date(Date.now() + process.env.COOKIE_EXPIRY * 60 * 60 * 1000),
-//   secure: false,
-// };
+const url = require("../utils/url");
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "development" ? false : true,
+  path: "/",
+  domain: process.env.NODE_ENV === "development" ? url.backend_Dev_Domain : url.backend_Prod_Domain,
+};
 const url = require("../utils/url");
 
 const signToken = (user) => {
@@ -17,22 +19,18 @@ const signToken = (user) => {
 
 const createToken = (res, user, statusCode, message) => {
   const token = signToken(user);
-  res
-    .status(statusCode)
-    .cookie("jwt", token, {
-      httpOnly: true,
-      expires: new Date(Date.now() + process.env.COOKIE_EXPIRY * 24 * 60 * 60 * 1000),
-      secure: url.frontEndUrl === "http://localhost:3000" ? false : true,
-      path: "/",
-      domain: url.frontEndUrl === "http://localhost:3000" ? "localhost" : "chatsphereserver.up.railway.app",
-      sameSite: "none",
-    })
-    .json({
-      status: "success",
-      message,
-      user,
-      token,
-    });
+  let cookieConfig;
+  cookieConfig = { ...cookieOptions, expires: new Date(Date.now() + process.env.COOKIE_EXPIRY * 24 * 60 * 60 * 1000) };
+
+  if (process.env.NODE_ENV === "production") {
+    cookieConfig.sameSite = "none";
+  }
+  res.status(statusCode).cookie("jwt", token, cookieConfig).json({
+    status: "success",
+    message,
+    user,
+    token,
+  });
 };
 
 exports.signUp = catchAsync(async (req, res, next) => {
@@ -60,13 +58,12 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.logout = catchAsync(async (req, res, next) => {
-  res.clearCookie("jwt", {
-    domain: url.frontEndUrl === "http://localhost:3000" ? "localhost" : "chatsphereserver.up.railway.app",
-    path: "/",
-    sameSite: "none",
-    secure: true,
-    httpOnly: true,
-  });
+  let cookieConfig;
+  cookieConfig = { ...cookieOptions };
+  if (process.env.NODE_ENV === "production") {
+    cookieConfig.sameSite = "none";
+  }
+  res.clearCookie("jwt", cookieConfig);
   res.status(200).json({
     status: "success",
     message: "Logout successful",

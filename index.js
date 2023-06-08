@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: url.frontEndUrl,
+    origin: process.env.NODE_ENV === "development" ? url.frontEnd_Dev_Url : url.frontEnd_Prod_Url,
     credentials: true,
   })
 );
