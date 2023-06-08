@@ -26,6 +26,20 @@ const groupChatMessageSchema = mongoose.Schema({
       type: String,
     },
   },
+  file: {
+    url: {
+      type: String,
+    },
+    fileName: {
+      type: String,
+    },
+    mimeType: {
+      type: String,
+    },
+    size: {
+      type: String,
+    },
+  },
 });
 
 const GroupChatMessageModel = mongoose.model("GroupChatMessage", groupChatMessageSchema);

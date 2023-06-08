@@ -22,7 +22,7 @@ exports.createGroup = catchAsync(async (req, res, next) => {
 
 exports.createGroupChatMessage = catchAsync(async (socket, data, io) => {
   const currentUser = await socket.user;
-  const { content, date, _id } = data;
+  const { content, date, _id, file } = data;
   // console.log("message", content, "date", date, "group id", _id);
 
   const messageReplyDetails = data?.messageReplyDetails;
@@ -33,6 +33,7 @@ exports.createGroupChatMessage = catchAsync(async (socket, data, io) => {
     groupId: _id,
     author: currentUser.id,
     messageReplyDetails,
+    file,
   });
   // console.log(messageReplyDetails);
 
