@@ -11,7 +11,7 @@ let GLOBAL_CURRENT_ROOM_ID = null;
 exports.registerSocketServer = (server) => {
   const io = socket(server, {
     cors: {
-      origin: url.frontEndUrl,
+      origin: process.env.NODE_ENV === "development" ? url.frontEnd_Dev_Url : url.frontEnd_Prod_Url,
       credentials: true,
       methods: ["GET", "POST", "PATCH"],
     },
