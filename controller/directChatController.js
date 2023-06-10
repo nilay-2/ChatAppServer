@@ -46,10 +46,9 @@ exports.getChatHistory = catchAsync(async (req, res, next) => {
 
 exports.deleteMessage = catchAsync(async (req, res, next) => {
   const { messageId } = req.params;
-
   if (!messageId) return next("Please try again later");
 
-  await Chat.findByIdAndDelete(messageId);
+  await Chat.findByIdAndDelete({ _id: messageId });
 
   res.status(200).json({
     status: "success",
