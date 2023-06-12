@@ -4,6 +4,7 @@ const Friends = require("../models/friendsModel");
 const catchAsync = require("../utils/catchAsync");
 const updateFriendsPendingInvitation = require("../socketHandler/friends/updateFriendsPendingInvitations");
 const updateFriendsList = require("../socketHandler/friends/updateFriendsList");
+const createInvtNotification = require("../socketHandler/friends/createNotification");
 exports.sendInvite = catchAsync(async (req, res, next) => {
   const { mail: receiverEmail } = req.body;
   const { email: senderEmail, _id: senderId } = req.user;
@@ -30,7 +31,7 @@ exports.sendInvite = catchAsync(async (req, res, next) => {
     ],
   });
 
-  console.log("friends", frnds);
+  // console.log("friends", frnds);
 
   if (frnds.length === 2) {
     return next(`You are already a friend of ${receiver.email}`);
@@ -56,6 +57,9 @@ exports.sendInvite = catchAsync(async (req, res, next) => {
 
   updateFriendsPendingInvitation(receiver._id.toString());
 
+  // invite notification -- accept and reject
+  await createInvtNotification({ sender: req.user, receiver, type: "sent" });
+
   res.status(200).json({
     status: "success",
     message: `Invitation has been sent to ${receiverEmail}`,
@@ -79,6 +83,9 @@ exports.rejectInvitation = catchAsync(async (req, res, next) => {
   // updateFriendsList(Invt.senderId.toString());
   // update pending invitations list
   updateFriendsPendingInvitation(receiverId.toString());
+
+  // --notification - accepting request
+  await createInvtNotification({ sender: req.user, receiver: Invt.senderId, type: "reject" });
 
   res.status(200).json({
     status: "success",
@@ -109,6 +116,8 @@ exports.acceptInvitation = catchAsync(async (req, res, next) => {
   updateFriendsList(senderId.toString());
   // update pending invitation list
   updateFriendsPendingInvitation(receiverId.toString());
+  // --notification - rejecting request
+  await createInvtNotification({ sender: req.user, receiver: senderId, type: "accept" });
 
   res.status(200).json({
     status: "success",
