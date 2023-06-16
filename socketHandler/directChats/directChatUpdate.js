@@ -1,6 +1,7 @@
 const { Socket } = require("socket.io");
 const Chat = require("../../models/chatModel");
 const serverStore = require("../../serverStore");
+const directChatNotification = require("../directChats/directChatNotification");
 // exports.realTimeChatUpdate = async (author, receiver) => {
 //   const conversation = await Chat.find(
 //     { participants: { $all: [author, receiver] } },
@@ -22,13 +23,16 @@ const serverStore = require("../../serverStore");
 //   }
 // };
 
-exports.realTimeChatUpdate = (newChat, author, receiver) => {
+exports.realTimeChatUpdate = async (newChat, author, receiver) => {
   // console.log(newChat);
   const io = serverStore.getSocketIoInstance();
   const authorList = serverStore.getActiveConnections(author);
   const receiverList = serverStore.getActiveConnections(receiver);
-  console.log(authorList, receiverList);
-  console.log(newChat);
+  if (receiverList.length === 0) {
+    directChatNotification.createMessageNotification(newChat); // if the other user is offline then store the message as notification.
+  }
+  // console.log(authorList);
+  // console.log(newChat);
   // receiverList.forEach((receiverId) => {}); // we can use loops
   io.to([...receiverList, ...authorList]).emit("realTimeChatUpdate", newChat); // we can directly pass the array // send the new message to author and sender both
 };

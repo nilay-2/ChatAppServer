@@ -4,6 +4,7 @@ const newConnectionHandler = require("./socketHandler/newConnectionHandler");
 const disconnectHandler = require("./socketHandler/disconnectHandler");
 const directChatController = require("./controller/directChatController");
 const groupChatController = require("./controller/groupChatController");
+const directChatNotification = require("./socketHandler/directChats//directChatNotification");
 const serverStore = require("./serverStore");
 const url = require("./utils/url");
 let GLOBAL_CURRENT_ROOM_ID = null;
@@ -38,7 +39,7 @@ exports.registerSocketServer = (server) => {
     });
 
     socket.on("directMessage", (data) => {
-      console.log(data);
+      // console.log(data);
       directChatController.createNewDirectChats(socket, data);
     });
 
@@ -71,6 +72,11 @@ exports.registerSocketServer = (server) => {
       // receiver_details_for_typing_indicator = receiverSocketId;
       // sender_details_for_typing_indicator = data.sender;
       socket.to(receiverSocketId).emit("received_typing_indicator_event", data.sender);
+    });
+
+    socket.on("chat_notification", async (messageData) => {
+      const chat = await directChatNotification.createMessageNotification(messageData);
+      directChatNotification.realTimeChatNotificationUpdate(chat);
     });
   });
 
