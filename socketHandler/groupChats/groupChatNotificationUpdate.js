@@ -15,3 +15,9 @@ exports.initialGroupNotificationUpdate = async (userId) => {
   const receiverList = serverStore.getActiveConnections(userId);
   io.to(receiverList).emit("initial_group_notification_update", notifications);
 };
+
+exports.readAllNotifications = async ({ notifications, userId }) => {
+  await GroupChatNotification.deleteMany({ _id: { $in: notifications } });
+
+  await this.initialGroupNotificationUpdate(userId);
+};
