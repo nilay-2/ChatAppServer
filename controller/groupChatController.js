@@ -2,6 +2,8 @@ const GroupChatRoom = require("../models/groupChatModel");
 const catchAsync = require("../utils/catchAsync");
 const groupUpdateHandler = require("../socketHandler/groupChats/groupChatUpdate");
 const GroupChatMessage = require("../models/groupChatMessageModel");
+const GroupChatNotification = require("../models/groupChatNotificationModel");
+const serverStore = require("../serverStore");
 exports.createGroup = catchAsync(async (req, res, next) => {
   const { groupName, arrayOfFriendsId } = req.body;
   arrayOfFriendsId?.push(req.user._id.toString());
@@ -23,7 +25,6 @@ exports.createGroup = catchAsync(async (req, res, next) => {
 exports.createGroupChatMessage = catchAsync(async (socket, data, io) => {
   const currentUser = await socket.user;
   const { content, date, _id, file } = data;
-  // console.log("message", content, "date", date, "group id", _id);
 
   const messageReplyDetails = data?.messageReplyDetails;
 
@@ -35,21 +36,27 @@ exports.createGroupChatMessage = catchAsync(async (socket, data, io) => {
     messageReplyDetails,
     file,
   });
-  // console.log(messageReplyDetails);
 
-  await groupChatMessage.populate({ path: "author", select: "_id name email" }).execPopulate();
+  await groupChatMessage
+    .populate({ path: "author", select: "_id name email" })
+    .populate({ path: "groupId", select: "participants" })
+    .execPopulate();
 
-  this.realTimeGroupChatUpdate(socket, _id, io, groupChatMessage);
+  this.realTimeGroupChatUpdate(_id, io, groupChatMessage);
 });
 
-exports.realTimeGroupChatUpdate = async (socket, id, io, groupChatMessage) => {
-  io.to(id).emit("recieve_group_message", groupChatMessage);
-  // console.log(groupChatMessages);
+exports.realTimeGroupChatUpdate = async (id, io, groupChatMessage) => {
+  // send groupChatMessages to the socket ids of the online participants of the group for notification
+  const { onlineParticipants, offlineParticipants } = serverStore.getOnlineParticipants(
+    groupChatMessage.groupId?.participants
+  );
+
+  // here id is room id from the database and not socketId
+  io.to(id).to(onlineParticipants).emit("recieve_group_message", groupChatMessage);
 };
 
 exports.getRealTimeGroupChatMessages = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  // console.log("group id:", id);
   const groupChatMessages = await GroupChatMessage.find({ groupId: id }).populate({
     path: "author",
     select: "_id name email",
@@ -71,3 +78,33 @@ exports.deleteGroupChatMessage = catchAsync(async (req, res, next) => {
     message: "Message deleted successfully",
   });
 });
+
+exports.createGroupChatNotification = async (data) => {
+  try {
+    const { onlineParticipants, offlineParticipants } = serverStore.getOnlineParticipants(
+      data.groupChatMessages.groupId?.participants
+    );
+    // console.log(offlineParticipants);
+    // send notification to offline participants
+    // func()
+    offlineParticipants.forEach(async (offlineId) => {
+      try {
+        await GroupChatNotification.create({
+          groupMessageId: data.groupChatMessages._id,
+          receiverId: offlineId,
+        });
+      } catch (error) {
+        console.log("Duplicate entires");
+      }
+    });
+
+    const groupChatNotification = await GroupChatNotification.create({
+      groupMessageId: data.groupChatMessages._id,
+      receiverId: data.receiverId,
+    });
+    await groupChatNotification.populate({ path: "groupMessageId" }).execPopulate();
+    return { onlineParticipants, groupChatNotification };
+  } catch (error) {
+    console.log(`Duplicated entries are not allowed`);
+  }
+};
