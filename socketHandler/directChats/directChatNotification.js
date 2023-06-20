@@ -3,17 +3,33 @@ const MessageNotificationModel = require("../../models/messageNotification");
 const serverStore = require("../../serverStore");
 const catchAsync = require("../../utils/catchAsync");
 exports.createMessageNotification = async (newChat) => {
-  const chatNotification = await MessageNotificationModel.create({ messageId: newChat._id });
+  try {
+    const chatNotification = await MessageNotificationModel.create({ messageId: newChat._id });
 
-  await chatNotification.populate({ path: "messageId" }).execPopulate();
-  return chatNotification;
+    await chatNotification.populate({ path: "messageId" }).execPopulate();
+    return chatNotification;
+  } catch (error) {
+    if (error.code === 11000) {
+      // Handle duplicate key error
+      console.error("Duplicate key error: messageId already exists");
+      // Return an appropriate response or throw a custom error if needed
+    } else {
+      // Handle other errors
+      console.error("Error creating message notification:", error);
+      // Return an appropriate response or throw a custom error if needed
+    }
+  }
 };
 
 exports.realTimeChatNotificationUpdate = (chatNotification) => {
   // console.log("chat notification", chatNotification);
-  const io = serverStore.getSocketIoInstance();
-  const receiverList = serverStore.getActiveConnections(chatNotification.messageId.receiver.toString());
-  io.to(receiverList).emit("receive_chat_notification", chatNotification);
+  try {
+    const io = serverStore.getSocketIoInstance();
+    const receiverList = serverStore.getActiveConnections(chatNotification.messageId.receiver?.toString());
+    io.to(receiverList).emit("receive_chat_notification", chatNotification);
+  } catch (error) {
+    console.log(`${error}`);
+  }
 };
 
 exports.initialChatNotificationUpdate = async (userId) => {

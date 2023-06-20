@@ -5,6 +5,7 @@ const disconnectHandler = require("./socketHandler/disconnectHandler");
 const directChatController = require("./controller/directChatController");
 const groupChatController = require("./controller/groupChatController");
 const directChatNotification = require("./socketHandler/directChats//directChatNotification");
+const groupChatNotificationUpdate = require("./socketHandler/groupChats/groupChatNotificationUpdate");
 const serverStore = require("./serverStore");
 const url = require("./utils/url");
 let GLOBAL_CURRENT_ROOM_ID = null;
@@ -77,6 +78,16 @@ exports.registerSocketServer = (server) => {
     socket.on("chat_notification", async (messageData) => {
       const chat = await directChatNotification.createMessageNotification(messageData);
       directChatNotification.realTimeChatNotificationUpdate(chat);
+    });
+
+    socket.on("send_groupChat_notification", async (data) => {
+      const result = await groupChatController.createGroupChatNotification(data);
+      if (result) {
+        groupChatNotificationUpdate.realTimeGroupChatNotificationUpdate({
+          groupChatNotification: result.groupChatNotification,
+          onlineParticipants: result.onlineParticipants,
+        });
+      }
     });
   });
 

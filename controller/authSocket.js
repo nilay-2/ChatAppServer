@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
+const serverStore = require("../serverStore");
 exports.verifySocketToken = async (socket, next) => {
   // console.log("hello");
   const token = socket.handshake.auth?.token;

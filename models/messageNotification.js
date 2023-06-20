@@ -4,6 +4,7 @@ const messageNotificationSchema = mongoose.Schema({
   messageId: {
     type: mongoose.Schema.ObjectId,
     ref: "Chat",
+    unique: true,
   },
 });
 

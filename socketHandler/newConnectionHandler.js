@@ -4,6 +4,7 @@ const updateFriendsList = require("../socketHandler/friends/updateFriendsList");
 const groupUpdateHandler = require("../socketHandler/groupChats/groupChatUpdate");
 const sendInvtNotification = require("../socketHandler/friends/sendInvtNotification");
 const directChatNotification = require("../socketHandler/directChats/directChatNotification");
+const groupChatNotificationUpdate = require("../socketHandler/groupChats/groupChatNotificationUpdate");
 const newConnectionHandler = async (socket) => {
   const userId = await socket.user;
   serverStore.addNewConnectedUser({ socketId: socket.id, userId: userId.id });
@@ -24,6 +25,9 @@ const newConnectionHandler = async (socket) => {
 
   // initial direct chat notification update
   directChatNotification.initialChatNotificationUpdate(userId.id.toString());
+
+  // initial group chat notification update
+  groupChatNotificationUpdate.initialGroupNotificationUpdate(userId.id);
 };
 
 module.exports = newConnectionHandler;
