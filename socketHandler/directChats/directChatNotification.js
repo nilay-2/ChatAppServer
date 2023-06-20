@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const MessageNotificationModel = require("../../models/messageNotification");
 const serverStore = require("../../serverStore");
-const catchAsync = require("../../utils/catchAsync");
 exports.createMessageNotification = async (newChat) => {
   try {
     const chatNotification = await MessageNotificationModel.create({ messageId: newChat._id });
@@ -53,10 +52,8 @@ exports.initialChatNotificationUpdate = async (userId) => {
   io.to(receiverList).emit("initial_chat_notification_update", chatNotifications);
 };
 
-exports.deleteChatNotifications = catchAsync(async (req, res, next) => {
-  await MessageNotificationModel.deleteMany({ _id: { $in: req.body?.arrayOfIds } });
-  res.status(200).json({
-    status: "success",
-    message: "Chat notifications marked as read",
-  });
-});
+exports.readAllDirectChatNotifications = async ({ notifications, userId }) => {
+  await MessageNotificationModel.deleteMany({ _id: { $in: notifications } });
+
+  await this.initialChatNotificationUpdate(userId);
+};

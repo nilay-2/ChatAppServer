@@ -89,6 +89,15 @@ exports.registerSocketServer = (server) => {
         });
       }
     });
+
+    socket.on("read_group_notification", (notificationData) => {
+      groupChatNotificationUpdate.readAllNotifications(notificationData);
+    });
+
+    socket.on("read_direct_chat_notification", (notificationData) => {
+      console.log(notificationData);
+      directChatNotification.readAllDirectChatNotifications(notificationData);
+    });
   });
 
   setInterval(() => {
