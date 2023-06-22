@@ -8,8 +8,9 @@ const directChatNotification = require("./socketHandler/directChats//directChatN
 const groupChatNotificationUpdate = require("./socketHandler/groupChats/groupChatNotificationUpdate");
 const serverStore = require("./serverStore");
 const url = require("./utils/url");
+const dotenv = require("dotenv");
+dotenv.config({ path: "./.env" });
 let GLOBAL_CURRENT_ROOM_ID = null;
-
 exports.registerSocketServer = (server) => {
   const io = socket(server, {
     cors: {
@@ -66,14 +67,14 @@ exports.registerSocketServer = (server) => {
       groupChatController.createGroupChatMessage(socket, data, io);
     });
 
-    socket.on("send_typing_indicator_event", (data) => {
-      // console.log(data);
-      const activeConnectionsOfReceiver = serverStore.getActiveConnections(data.id);
-      const [receiverSocketId] = activeConnectionsOfReceiver;
-      // receiver_details_for_typing_indicator = receiverSocketId;
-      // sender_details_for_typing_indicator = data.sender;
-      socket.to(receiverSocketId).emit("received_typing_indicator_event", data.sender);
-    });
+    // socket.on("send_typing_indicator_event", (data) => {
+    //   // console.log(data);
+    //   const activeConnectionsOfReceiver = serverStore.getActiveConnections(data.id);
+    //   const [receiverSocketId] = activeConnectionsOfReceiver;
+    //   // receiver_details_for_typing_indicator = receiverSocketId;
+    //   // sender_details_for_typing_indicator = data.sender;
+    //   socket.to(receiverSocketId).emit("received_typing_indicator_event", data.sender);
+    // });
 
     socket.on("chat_notification", async (messageData) => {
       const chat = await directChatNotification.createMessageNotification(messageData);
@@ -97,6 +98,14 @@ exports.registerSocketServer = (server) => {
     socket.on("read_direct_chat_notification", (notificationData) => {
       console.log(notificationData);
       directChatNotification.readAllDirectChatNotifications(notificationData);
+    });
+
+    socket.on("typing", (data) => {
+      socket.broadcast.emit("receive_typing_indicator", data);
+    });
+
+    socket.on("stop_typing", (data) => {
+      socket.broadcast.emit("receive_stop_typing_indicator", data);
     });
   });
 

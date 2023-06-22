@@ -3,6 +3,8 @@ const catchAsync = require("../utils/catchAsync");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 const url = require("../utils/url");
+const dotenv = require("dotenv");
+dotenv.config({ path: `${__dirname}/../.env` });
 const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "development" ? false : true,
