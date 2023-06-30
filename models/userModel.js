@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     // default: Date.now(),
   },
+  photo: {
+    type: String,
+    default: "default.jpg",
+  },
 });
 
 userSchema.pre("save", async function (next) {
