@@ -5,6 +5,54 @@ const { promisify } = require("util");
 const url = require("../utils/url");
 const dotenv = require("dotenv");
 dotenv.config({ path: `${__dirname}/../.env` });
+
+// profile pic upload controller
+const multer = require("multer");
+const sharp = require("sharp");
+
+const multerStorage = multer.memoryStorage();
+
+const upload = multer({
+  storage: multerStorage,
+});
+
+exports.fileParser = upload.single("photo");
+
+exports.resizeImg = catchAsync(async (req, res, next) => {
+  // console.log(req.file);
+
+  const fileName = `user-${req.user.id}-${Date.now()}.jpeg`;
+
+  sharp(req.file.buffer)
+    .resize(600, 600)
+    .toFormat("jpeg")
+    .jpeg({ quality: 90 })
+    .toBuffer()
+    .then((data) => {
+      const base64data = data.toString("base64");
+      res.status(200).json({
+        status: "success",
+        message: "image received",
+        bufferData: { fileName, b64data: base64data, contentType: "image/jpeg" },
+      });
+    });
+});
+
+exports.updateProfilePic = catchAsync(async (req, res, next) => {
+  // console.log(req.user._id);
+  const user = await User.findOneAndUpdate(
+    { _id: req.user._id },
+    { $set: { photo: req.body.photo } },
+    { new: true, runValidators: false }
+  );
+  console.log(user);
+  res.status(200).json({
+    status: "success",
+    message: "photo updated successfully",
+    user,
+  });
+});
+
 const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "development" ? false : true,
@@ -87,7 +135,10 @@ exports.protect = catchAsync(async (req, res, next) => {
   if (response) {
     return next("User recently changed password, please login");
   }
-  req.user = user;
+  const userObj = { ...user?._doc, token };
+
+  // console.log("userObj", userObj);
+  req.user = userObj;
   next();
 });
 
@@ -95,6 +146,7 @@ exports.allowUsersOnDashboard = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "JWT is valid",
+    user: req.user,
   });
 });
 
@@ -106,4 +158,18 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.passwordChangedAt = Date.now() - 1000;
   user.save({ validateBeforeSave: false });
   createToken(res, user, 200, "Password updated successfully");
+});
+
+exports.updateNameAndEmail = catchAsync(async (req, res, next) => {
+  console.log(req.body);
+  const user = await User.findOneAndUpdate(
+    { _id: req.user._id },
+    { $set: { name: req.body.name, email: req.body.email } },
+    { new: true, runValidators: false }
+  );
+
+  res.status(200).json({
+    status: "success",
+    message: "Data received",
+  });
 });
