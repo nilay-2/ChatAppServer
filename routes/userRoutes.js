@@ -8,7 +8,7 @@ router.route("/logout").delete(authController.logout);
 
 router.use(authController.protect);
 
-router.route("/updatePassword").post(authController.updatePassword);
+router.route("/updatePassword").patch(authController.updatePassword);
 // verify jwt token before making a socket connection in the frontend
 
 // upload profile picture route
