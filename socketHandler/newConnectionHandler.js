@@ -27,7 +27,7 @@ const newConnectionHandler = async (socket) => {
   directChatNotification.initialChatNotificationUpdate(userId.id.toString());
 
   // initial group chat notification update
-  groupChatNotificationUpdate.initialGroupNotificationUpdate(userId.id);
+  groupChatNotificationUpdate.initialGroupNotificationUpdate(userId.id.toString());
 };
 
 module.exports = newConnectionHandler;
