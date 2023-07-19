@@ -6,7 +6,7 @@ const updateFriendsList = async (userId) => {
 
   if (receiverList.length > 0) {
     // get friends of the current user
-    const friends = await Friends.find({ userId: userId }).populate("friendId", "_id name email photo");
+    const friends = await Friends.find({ userId: userId }).populate("friendId", "_id name email");
     // console.log(friends);
 
     // get io instance
