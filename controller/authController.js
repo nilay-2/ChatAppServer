@@ -127,7 +127,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   // console.log(decoded);
-  const user = await User.findById(decoded.id).select("-password -__v -passwordChangedAt");
+  const user = await User.findById(decoded.id);
   if (!user) {
     return next("This email no longer exists");
   }
@@ -151,9 +151,9 @@ exports.allowUsersOnDashboard = catchAsync(async (req, res, next) => {
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
-  const { newPassword, confirmPassword } = req.body;
-  const user = await User.findById(req.user._id);
-  user.password = newPassword;
+  const { password, confirmPassword } = req.body;
+  const user = await User.findById(req.user.id);
+  user.password = password;
   user.confirmPassword = confirmPassword;
   user.passwordChangedAt = Date.now() - 1000;
   user.save({ validateBeforeSave: false });
