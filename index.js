@@ -39,10 +39,13 @@ mongoose
     console.log("Database connected successfully");
   });
 
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "https://master--keen-chaja-a2d6ae.netlify.app");
-//   next();
-// });
+app.use((req, res, next) => {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    process.env.NODE_ENV === "production" ? "https://chatsphereclient.netlify.app" : "http://localhost:3000"
+  );
+  next();
+});
 
 app.use("/api/users", userRoutes);
 app.use("/api/friend-invitation", friendInvitationRoutes);
