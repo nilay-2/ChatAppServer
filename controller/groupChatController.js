@@ -80,11 +80,12 @@ exports.deleteGroupChatMessage = catchAsync(async (req, res, next) => {
 });
 
 exports.createGroupChatNotification = async (data) => {
+  console.log(data);
   try {
     const { onlineParticipants, offlineParticipants } = serverStore.getOnlineParticipants(
       data.groupChatMessages.groupId?.participants
     );
-    // console.log(offlineParticipants);
+    console.log(offlineParticipants);
     // send notification to offline participants
     // func()
     offlineParticipants.forEach(async (offlineId) => {
