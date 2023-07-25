@@ -65,7 +65,8 @@ const server = app.listen(
   }
 );
 
-// server.keepAliveTimeout = 120 * 1000;
-// server.headersTimeout = 120 * 1000;
+// for render.com
+server.keepAliveTimeout = 120 * 1000;
+server.headersTimeout = 120 * 1000;
 
 socket.registerSocketServer(server);
