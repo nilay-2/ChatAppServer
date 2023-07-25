@@ -82,6 +82,7 @@ exports.registerSocketServer = (server) => {
     });
 
     socket.on("send_groupChat_notification", async (data) => {
+      console.log(data);
       const result = await groupChatController.createGroupChatNotification(data);
       if (result) {
         groupChatNotificationUpdate.realTimeGroupChatNotificationUpdate({
