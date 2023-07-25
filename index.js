@@ -60,4 +60,8 @@ const server = app.listen(port, host, () => {
   console.log(`App running on port ${port}`);
   console.log(`Enviroment: ${process.env.NODE_ENV}`);
 });
+
+server.keepAliveTimeout = 120 * 1000;
+server.headersTimeout = 120 * 1000;
+
 socket.registerSocketServer(server);
