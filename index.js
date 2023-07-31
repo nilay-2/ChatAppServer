@@ -66,3 +66,7 @@ const server = app.listen(port, host, () => {
 // server.headersTimeout = 120 * 1000;
 
 socket.registerSocketServer(server);
+
+// for railway.app
+    // "start": "nodemon index.js",
+    // "prod": "NODE_ENV=production node index.js",
