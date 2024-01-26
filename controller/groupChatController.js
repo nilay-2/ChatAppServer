@@ -52,8 +52,8 @@ exports.realTimeGroupChatUpdate = async (id, io, groupChatMessage) => {
   );
 
   // here id is room id from the database and not socketId
-  io.to(id).emit("recieve_group_message", groupChatMessage);
-  // .to(onlineParticipants)
+  io.to(onlineParticipants).emit("recieve_group_message", groupChatMessage);
+  // .to(id) // the socket.to(<room-id>) works well in localhost but will not work in deployment as the socket connections keeps on restarting each time with new socket id
 };
 
 exports.getRealTimeGroupChatMessages = catchAsync(async (req, res, next) => {
