@@ -37,6 +37,7 @@ exports.registerSocketServer = (server) => {
     newConnectionHandler(socket);
 
     socket.on("disconnect", () => {
+      console.log("disconnected");
       disconnectHandler(socket);
     });
 
