@@ -52,7 +52,8 @@ exports.realTimeGroupChatUpdate = async (id, io, groupChatMessage) => {
   );
 
   // here id is room id from the database and not socketId
-  io.to(id).to(onlineParticipants).emit("recieve_group_message", groupChatMessage);
+  io.to(id).emit("recieve_group_message", groupChatMessage);
+  // .to(onlineParticipants)
 };
 
 exports.getRealTimeGroupChatMessages = catchAsync(async (req, res, next) => {
