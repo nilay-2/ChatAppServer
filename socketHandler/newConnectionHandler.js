@@ -1,6 +1,5 @@
 const serverStore = require("../serverStore");
 const updateFriendsPendingInvitation = require("../socketHandler/friends/updateFriendsPendingInvitations");
-const updateFriendsList = require("../socketHandler/friends/updateFriendsList");
 const groupUpdateHandler = require("../socketHandler/groupChats/groupChatUpdate");
 const sendInvtNotification = require("../socketHandler/friends/sendInvtNotification");
 const directChatNotification = require("../socketHandler/directChats/directChatNotification");
@@ -13,9 +12,6 @@ const newConnectionHandler = async (socket) => {
 
   // initial update of pending invitations
   updateFriendsPendingInvitation(userId.id.toString());
-
-  // initial update of friends list
-  updateFriendsList(userId.id.toString());
 
   // initial update of groups
   groupUpdateHandler.groupChatUpdate(userId.id.toString());
