@@ -1,5 +1,6 @@
 const catchAsync = require("../utils/catchAsync");
 const Chat = require("../models/chatModel");
+const Friends = require("../models/friendsModel");
 const directChatUpdate = require("../socketHandler/directChats/directChatUpdate");
 exports.createNewDirectChats = catchAsync(async (socket, data) => {
   // console.log(data);
@@ -22,6 +23,10 @@ exports.createNewDirectChats = catchAsync(async (socket, data) => {
 
   newChat.participants = undefined;
   await newChat.populate({ path: "author", select: "_id name email" }).execPopulate();
+
+  // update the time of messaging for the friend
+  await Friends.findOneAndUpdate({ userId: author.id, friendId: receiverId }, { textedAt: new Date() });
+  await Friends.findOneAndUpdate({ userId: receiverId, friendId: author.id }, { textedAt: new Date() });
 
   // directChatUpdate.realTimeChatUpdate(author.id, receiverId);
   directChatUpdate.realTimeChatUpdate(newChat, author.id, receiverId);

@@ -9,6 +9,10 @@ const friendsSchema = mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "User",
   },
+  textedAt: {
+    type: Date,
+    default: 0,
+  },
 });
 
 const Friends = mongoose.model("Friends", friendsSchema);
