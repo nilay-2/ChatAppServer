@@ -6,6 +6,7 @@ const directChatNotification = require("../socketHandler/directChats/directChatN
 const groupChatNotificationUpdate = require("../socketHandler/groupChats/groupChatNotificationUpdate");
 const newConnectionHandler = async (socket) => {
   const userId = await socket.user;
+  console.log(userId);
   serverStore.addNewConnectedUser({ socketId: socket.id, userId: userId.id });
   const io = serverStore.getSocketIoInstance();
   io.emit("onlineUsers", { onlineUsers: [...serverStore.getOnlineUsers()] });
