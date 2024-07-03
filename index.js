@@ -68,5 +68,5 @@ const server = app.listen(port, host, () => {
 socket.registerSocketServer(server);
 
 // for railway.app
-    // "start": "nodemon index.js",
-    // "prod": "NODE_ENV=production node index.js",
+// "start": "nodemon index.js",
+// "prod": "NODE_ENV=production node index.js",
